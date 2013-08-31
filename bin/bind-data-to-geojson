@@ -48,40 +48,28 @@ var geojsonFile = fs.readFileSync(argv.geojson, 'utf8');
 var json = JSON.parse(jsonFile);
 var geojson = JSON.parse(geojsonFile);
 
+
 // bind away
-var result = bindData.bindData(json, geojson, argv.jsonColumn, argv.geojsonColumn, argv.ignoreCase);
+try {
 
-util.print('Matched ' + numeral(json.length - result.noMatches.length).format('0,0') + ' elements.');
+	var result = bindData.bindData(json, geojson, argv.jsonColumn, argv.geojsonColumn, argv.ignoreCase);
+	
+	util.print('Matched ' + numeral(json.length - result.noMatches.length).format('0,0') + ' elements.');
 
-// create a new polygon GeoJSON file
-util.print(' Writing to ' + argv.output + '...');
-fs.writeFileSync(argv.output, JSON.stringify(result.geojson, null, 4));
-util.print(' done.\n');
-
-if (result.noMatches.length) {
-	util.print('Found ' + result.noMatches.length + ' elements with no matches.');
-	util.print(' Writing to noMatches.json...');
-	fs.writeFileSync('noMatches.json', JSON.stringify(result.noMatches, null, 4));
+	// create a new polygon GeoJSON file
+	util.print(' Writing to ' + argv.output + '...');
+	fs.writeFileSync(argv.output, JSON.stringify(result.geojson, null, 4));
 	util.print(' done.\n');
+
+	if (result.noMatches.length) {
+		util.print('Found ' + result.noMatches.length + ' elements with no matches.');
+		util.print(' Writing to noMatches.json...');
+		fs.writeFileSync('noMatches.json', JSON.stringify(result.noMatches, null, 4));
+		util.print(' done.\n');
+	}
+
+} catch (e) {
+
+	util.print('\nError: ' + e + '\n');
+
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
