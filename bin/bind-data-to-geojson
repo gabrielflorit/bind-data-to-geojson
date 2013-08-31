@@ -1,0 +1,67 @@
+#!/usr/bin/env node
+
+var fs = require('fs');
+var optimist = require('optimist');
+var bindData = require('../bind-data-to-geojson.js');
+var numeral = require('numeral');
+var util = require('util');
+
+var argv = optimist
+	.usage('Bind JSON to GeoJSON.\nUsage: $0')
+	.options('j', {
+		demand: true,
+		alias: 'json',
+		describe: 'a JSON file'
+	})
+	.options('g', {
+		demand: true,
+		alias: 'geojson',
+		describe: 'a GeoJSON file'
+	})
+	.options('jc', {
+		demand: true,
+		alias: 'jsonColumn',
+		describe: 'the JSON column to bind on'
+	})
+	.options('gc', {
+		demand: true,
+		alias: 'geojsonColumn',
+		describe: 'the GeoJSON column to bind on'
+	})
+	.options('a', {
+		demand: false,
+		alias: 'ignoreCase',
+		default: true,
+		describe: 'whether to ignore case when matching JSON column to GeoJSON column'
+	})
+	.options('o', {
+		demand: false,
+		alias: 'output',
+		default: 'output.json',
+		describe: 'a GeoJSON file with the JSON bound to it'
+	})
+	.argv;
+
+var jsonFile = fs.readFileSync(argv.json, 'utf8');
+var geojsonFile = fs.readFileSync(argv.geojson, 'utf8');
+
+var json = JSON.parse(jsonFile);
+var geojson = JSON.parse(geojsonFile);
+
+// tell pace how many elements we're going to process
+var pace = require('pace')({
+	total: json.length,
+	itemType: 'elements'
+});
+
+function showProgress(elementsProcessed) {
+	pace.op(elementsProcessed);
+}
+
+// bind away
+var result = bindData.bindData(json, geojson, argv.jsonColumn, argv.geojsonColumn, argv.ignoreCase, showProgress);
+
+// create a new polygon GeoJSON file
+util.print('\nWriting to ' + argv.output + '...');
+fs.writeFileSync(argv.output, JSON.stringify(result, null, 4));
+util.print(' Done.');
