@@ -1,7 +1,9 @@
 // TODO: warn if the new data will overwrite an existing property
 // TODO: don't include the entire datum
 
-module.exports.bindData = function(data, geojson, dataColumn, geojsonColumn, ignoreCase, showProgress) {
+module.exports.bindData = function(data, geojson, dataColumn, geojsonColumn, ignoreCase) {
+
+	var noMatches = [];
 
 	// for each datum,
 	data.forEach(function(datum) {
@@ -30,8 +32,15 @@ module.exports.bindData = function(data, geojson, dataColumn, geojsonColumn, ign
 			feature.properties.data = datum;
 		});
 
+		if (!features.length) {
+			noMatches.push(datum[dataColumn]);
+		}
+
 	});
 
-	return geojson;
+	return {
+		geojson: geojson,
+		noMatches: noMatches
+	};
 
 };

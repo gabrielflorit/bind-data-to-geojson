@@ -48,20 +48,40 @@ var geojsonFile = fs.readFileSync(argv.geojson, 'utf8');
 var json = JSON.parse(jsonFile);
 var geojson = JSON.parse(geojsonFile);
 
-// tell pace how many elements we're going to process
-var pace = require('pace')({
-	total: json.length,
-	itemType: 'elements'
-});
-
-function showProgress(elementsProcessed) {
-	pace.op(elementsProcessed);
-}
-
 // bind away
-var result = bindData.bindData(json, geojson, argv.jsonColumn, argv.geojsonColumn, argv.ignoreCase, showProgress);
+var result = bindData.bindData(json, geojson, argv.jsonColumn, argv.geojsonColumn, argv.ignoreCase);
+
+util.print('Matched ' + numeral(json.length - result.noMatches.length).format('0,0') + ' elements.');
 
 // create a new polygon GeoJSON file
-util.print('\nWriting to ' + argv.output + '...');
-fs.writeFileSync(argv.output, JSON.stringify(result, null, 4));
-util.print(' Done.');
+util.print(' Writing to ' + argv.output + '...');
+fs.writeFileSync(argv.output, JSON.stringify(result.geojson, null, 4));
+util.print(' done.\n');
+
+if (result.noMatches.length) {
+	util.print('Found ' + result.noMatches.length + ' elements with no matches.');
+	util.print(' Writing to noMatches.json...');
+	fs.writeFileSync('noMatches.json', JSON.stringify(result.noMatches, null, 4));
+	util.print(' done.\n');
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
