@@ -40,7 +40,7 @@ module.exports.bindData = function(data, geojson, dataColumn, geojsonColumn, ign
 
 	return {
 		geojson: geojson,
-		noMatches: noMatches
+		noMatches: noMatches.sort()
 	};
 
 };
