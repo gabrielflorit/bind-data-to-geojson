@@ -5,23 +5,24 @@ var optimist = require('optimist');
 var bindData = require('../bind-data-to-geojson.js');
 var numeral = require('numeral');
 var util = require('util');
+var d3 = require('d3');
 
 var argv = optimist
-	.usage('Bind JSON to GeoJSON.\nUsage: $0')
-	.options('j', {
+	.usage('Bind data (JSON or CSV) to GeoJSON.\nUsage: $0')
+	.options('d', {
 		demand: true,
-		alias: 'json',
-		describe: 'a JSON file'
+		alias: 'data',
+		describe: 'the data file'
+	})
+	.options('dc', {
+		demand: true,
+		alias: 'dataColumn',
+		describe: 'the data column to bind on'
 	})
 	.options('g', {
 		demand: true,
 		alias: 'geojson',
-		describe: 'a GeoJSON file'
-	})
-	.options('jc', {
-		demand: true,
-		alias: 'jsonColumn',
-		describe: 'the JSON column to bind on'
+		describe: 'the GeoJSON file'
 	})
 	.options('gc', {
 		demand: true,
@@ -32,27 +33,41 @@ var argv = optimist
 		demand: false,
 		alias: 'ignoreCase',
 		default: true,
-		describe: 'whether to ignore case when matching JSON column to GeoJSON column'
+		describe: 'whether to ignore case when matching data column to GeoJSON column'
+	})
+	.options('t', {
+		demand: false,
+		alias: 'type',
+		default: 'json',
+		describe: 'whether the data file is JSON or CSV'
 	})
 	.options('o', {
 		demand: false,
 		alias: 'output',
 		default: 'output.json',
-		describe: 'a GeoJSON file with the JSON bound to it'
+		describe: 'a GeoJSON file with the data bound to it'
 	})
 	.argv;
 
-var jsonFile = fs.readFileSync(argv.json, 'utf8');
+var dataFile = fs.readFileSync(argv.data, 'utf8');
 var geojsonFile = fs.readFileSync(argv.geojson, 'utf8');
 
-var json = JSON.parse(jsonFile);
-var geojson = JSON.parse(geojsonFile);
+var json;
+if (argv.type.toLowerCase() === 'json') {
 
+	json = JSON.parse(dataFile);
+
+} else {
+
+	json = d3.csv.parse(dataFile);
+}
+
+var geojson = JSON.parse(geojsonFile);
 
 // bind away
 try {
 
-	var result = bindData.bindData(json, geojson, argv.jsonColumn, argv.geojsonColumn, argv.ignoreCase);
+	var result = bindData.bindData(json, geojson, argv.dataColumn, argv.geojsonColumn, argv.ignoreCase);
 	
 	util.print('Matched ' + numeral(json.length - result.noMatches.length).format('0,0') + ' elements.');
 
