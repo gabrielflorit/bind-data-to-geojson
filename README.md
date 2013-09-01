@@ -1,13 +1,14 @@
 bind-data-to-geojson
 =============
 
-	Bind JSON to GeoJSON.
+	Bind data (JSON or CSV) to GeoJSON.
 	Usage: bind-data-to-geojson
 
 	Options:
-	  -j, --json             a JSON file                                                         [required]
-	  -g, --geojson          a GeoJSON file                                                      [required]
-	  --jc, --jsonColumn     the JSON column to bind on                                          [required]
+	  -d, --data             the data file                                                       [required]
+	  --dc, --dataColumn     the data column to bind on                                          [required]
+	  -g, --geojson          the GeoJSON file                                                    [required]
 	  --gc, --geojsonColumn  the GeoJSON column to bind on                                       [required]
-	  -a, --ignoreCase       whether to ignore case when matching JSON column to GeoJSON column  [default: true]
-	  -o, --output           a GeoJSON file with the JSON bound to it                            [default: "output.json"]
+	  -a, --ignoreCase       whether to ignore case when matching data column to GeoJSON column  [default: true]
+	  -t, --type             whether the data file is JSON or CSV                                [default: "json"]
+	  -o, --output           a GeoJSON file with the data bound to it                            [default: "output.json"]

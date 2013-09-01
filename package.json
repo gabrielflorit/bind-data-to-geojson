@@ -1,6 +1,6 @@
 {
   "name": "bind-data-to-geojson",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Bind data (JSON or CSV) to GeoJSON",
   "main": "bind-data-to-geojson.js",
   "repository": "https://github.com/gabrielflorit/bind-data-to-geojson.git",
