@@ -12,3 +12,8 @@ bind-data-to-geojson
 	  -a, --ignoreCase       whether to ignore case when matching data column to GeoJSON column  [default: true]
 	  -t, --type             whether the data file is JSON or CSV                                [default: "json"]
 	  -o, --output           a GeoJSON file with the data bound to it                            [default: "output.json"]
+
+
+#install
+
+npm install -g bind-data-to-geojson
