@@ -16,4 +16,4 @@ bind-data-to-geojson
 
 #install
 
-npm install -g bind-data-to-geojson
+    npm install -g bind-data-to-geojson
